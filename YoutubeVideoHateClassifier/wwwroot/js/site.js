@@ -10,6 +10,7 @@ function analyzeVideo() {
         return;
     }
 
+    document.body.className = 'default-bg'; // Establecer el fondo a blanco mientras carga
 
     $.ajax({
         type: 'POST',
@@ -20,6 +21,14 @@ function analyzeVideo() {
             document.getElementById('result').style.display = 'block';
             document.getElementById('classification').innerText = data.classification;
             document.getElementById('confidence').innerText = data.confidence;
+
+            // Cambiar el color del fondo dependiendo de la clasificación
+            if (data.classification === 'Hate') {
+                document.body.className = 'hate';
+            } else {
+                document.body.className = 'no-hate';
+            }
+
         },
         contentType: "application/json",
         dataType: 'json'

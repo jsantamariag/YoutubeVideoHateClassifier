@@ -2,6 +2,7 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     margin: 50px;
+    transition: background-color 1s; /* Efecto fade de 1 segundo */
 }
 
 .container {
@@ -18,4 +19,17 @@ body {
 
 .loading {
     display: none;
+}
+
+
+.hate {
+    background-color: red;
+}
+
+.no-hate {
+    background-color: green;
+}
+
+.default-bg {
+    background-color: white;
 }
