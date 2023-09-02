@@ -22,7 +22,9 @@ function analyzeVideo() {
             document.getElementById('classification').innerText = data.classification;
             document.getElementById('confidence').innerText = data.confidence;
             document.getElementById('transcription').innerText = data.transcription;
-
+            // Añadir la URL al iframe para mostrar el video
+            const videoId = extractVideoID(link);
+            document.getElementById('youtube-video').src = `https://www.youtube.com/embed/${videoId}`;
 
             // Cambiar el color del fondo dependiendo de la clasificación
             if (data.classification === 'Hate') {
@@ -49,4 +51,10 @@ function validateYouTubeUrl(url) {
             return false;
         }
     }
+}
+
+function extractVideoID(url) {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : false;
 }
