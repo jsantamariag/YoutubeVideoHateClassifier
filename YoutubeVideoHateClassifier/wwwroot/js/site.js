@@ -21,6 +21,8 @@ function analyzeVideo() {
             document.getElementById('result').style.display = 'block';
             document.getElementById('classification').innerText = data.classification;
             document.getElementById('confidence').innerText = data.confidence;
+            document.getElementById('transcription').innerText = data.transcription;
+
 
             // Cambiar el color del fondo dependiendo de la clasificación
             if (data.classification === 'Hate') {
