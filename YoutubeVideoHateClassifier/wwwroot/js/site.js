@@ -43,7 +43,7 @@ function analyzeVideo() {
 
 function validateYouTubeUrl(url) {
     if (url !== undefined || url !== '') {
-        var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
+        var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|shorts\/)([^#\&\?]*).*/;
         var match = url.match(regExp);
         if (match && match[2].length == 11) {
             return true;
@@ -54,7 +54,8 @@ function validateYouTubeUrl(url) {
 }
 
 function extractVideoID(url) {
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
+    // Expresión regular que maneja tanto URLs de videos normales como de "shorts"
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|shorts\/)([^#\&\?]*).*/;
     const match = url.match(regExp);
     return (match && match[2].length === 11) ? match[2] : false;
 }
