@@ -1,7 +1,16 @@
 ﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
-// Write your JavaScript code.
+// Inicializaciónd de la conexión con el websocket
+
+var socket = io.connect('http://localhost:5000');
+
+socket.on('message', function (data) {
+    document.getElementById('loading').innerText = data.data;
+});
+
+// El resto del código Javascript...
+
 function analyzeVideo() {
     var link = document.getElementById('youtube-link').value;
 
