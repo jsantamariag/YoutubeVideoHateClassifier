@@ -1,7 +1,4 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Inicializaciónd de la conexión con el websocket
+﻿// Inicialización dde la conexión con el websocket
 
 var socket = io.connect('http://localhost:5000');
 
@@ -9,7 +6,7 @@ socket.on('message', function (data) {
     document.getElementById('loading').innerText = data.data;
 });
 
-// El resto del código Javascript...
+
 
 function analyzeVideo() {
     var link = document.getElementById('youtube-link').value;
@@ -26,22 +23,46 @@ function analyzeVideo() {
         url: 'http://localhost:5000/analyze_video',
         data: JSON.stringify({ 'link': link }),
         success: function (data) {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('result').style.display = 'block';
-            document.getElementById('classification').innerText = data.classification;
-            document.getElementById('confidence').innerText = data.confidence;
-            document.getElementById('transcription').innerText = data.transcription;
-            // Añadir la URL al iframe para mostrar el video
-            const videoId = extractVideoID(link);
-            document.getElementById('youtube-video').src = `https://www.youtube.com/embed/${videoId}`;
+            console.log("Success Data:", data);
+            if (data.success) {
+                // Obtener feedback y resultados del proceso
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('classification').innerText = data.classification;
+                document.getElementById('confidence').innerText = data.confidence;
+                document.getElementById('transcription').innerText = data.transcription;
 
-            // Cambiar el color del fondo dependiendo de la clasificación
-            if (data.classification === 'Hate') {
-                document.body.className = 'hate';
+                // Añadir las categorías al HTML
+                const categoriesElement = document.getElementById('categories');
+                categoriesElement.innerHTML = "";  // Limpiar el contenido previo
+                for (const [category, value] of Object.entries(data.type_result)) {
+                    const listItem = document.createElement('li');
+                    listItem.innerText = `${category}: ${value}`;
+                    categoriesElement.appendChild(listItem);
+                }
+                // Añadir la URL al iframe para mostrar el video
+                const videoId = extractVideoID(link);
+                document.getElementById('youtube-video').src = `https://www.youtube.com/embed/${videoId}`;
+
+                // Cambiar el color del fondo dependiendo de la clasificación
+                if (data.classification === 'Hate') {
+                    document.body.className = 'hate';
+                } else {
+                    document.body.className = 'no-hate';
+                }
             } else {
-                document.body.className = 'no-hate';
+                alert("Ocurrió un error: " + data.error);
+                document.getElementById('loading').style.display = 'none';
             }
 
+            
+
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log("Error Data:", jqXHR, textStatus, errorThrown);
+            alert("Ocurrió un error: " + errorThrown);
+            document.getElementById('loading').style.display = 'none';
+            
         },
         contentType: "application/json",
         dataType: 'json'
@@ -50,6 +71,7 @@ function analyzeVideo() {
     document.getElementById('loading').style.display = 'block';
 }
 
+// Validación de link de Youtube (vídeo o short)
 function validateYouTubeUrl(url) {
     if (url !== undefined || url !== '') {
         var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|shorts\/)([^#\&\?]*).*/;
@@ -62,8 +84,8 @@ function validateYouTubeUrl(url) {
     }
 }
 
-function extractVideoID(url) {
-    // Expresión regular que maneja tanto URLs de videos normales como de "shorts"
+// Extraer id de un vídeo o short
+function extractVideoID(url) {    
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|shorts\/)([^#\&\?]*).*/;
     const match = url.match(regExp);
     return (match && match[2].length === 11) ? match[2] : false;
